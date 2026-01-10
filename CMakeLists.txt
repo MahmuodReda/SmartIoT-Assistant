@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(files
     main.cpp
+    src/Communication.cpp
 )
 
 message(STATUS "SmartIoT files: ${files}")
