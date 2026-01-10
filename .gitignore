@@ -40,7 +40,6 @@
 # debug information files
 *.dwo
 *.html
-*.json
 *.png
 *.js
 *.css
@@ -48,5 +47,6 @@
 *.svg
 *.reg
 *.py
+*.ps1
 build/
 .vscode/
