@@ -39,3 +39,14 @@
 
 # debug information files
 *.dwo
+*.html
+*.json
+*.png
+*.js
+*.css
+*.bat
+*.svg
+*.reg
+*.py
+build/
+.vscode/
