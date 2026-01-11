@@ -3,9 +3,8 @@
 
 int main()
 {
-    std::cout << "SmartIoT build test successful!" << std::endl;
-
-    Communication_Test(); // test module linking
+    Communication comm("data/input.json"); // Specify the path to your JSON file
+    comm.readData();                       // Read and process the data
 
     return 0;
 }
