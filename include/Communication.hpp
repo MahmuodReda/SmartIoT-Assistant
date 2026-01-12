@@ -1,6 +1,9 @@
 #pragma once
+
 #include <string>
 #include <fstream>
+#include "InputData.hpp"
+
 /**
  * @brief Communication class to handle reading data from a JSON file.
  *
@@ -13,6 +16,6 @@ private:
 
 public:
     Communication(const std::string &filename);
-    void readData();
+    InputData readData();
     ~Communication() = default;
 };
