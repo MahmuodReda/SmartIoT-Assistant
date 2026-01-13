@@ -50,6 +50,8 @@ InputData Communication::readData()
     inputData.battery_level = data["battery_level"];
     inputData.presence = data["presence"];
     inputData.steps = data["steps"];
+    input_file.clear();                 // clear EOF flag
+    input_file.seekg(0, std::ios::beg); // rewind to beginning for next read
 
     return inputData;
 }
