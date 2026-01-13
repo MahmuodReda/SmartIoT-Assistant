@@ -27,3 +27,5 @@ target_include_directories(SmartIoT PUBLIC
     ${CMAKE_SOURCE_DIR}/external
 )
 
+find_package(spdlog CONFIG REQUIRED)
+target_link_libraries(SmartIoT PRIVATE spdlog::spdlog_header_only)
