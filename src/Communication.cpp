@@ -25,9 +25,15 @@ Communication::Communication(const std::string &filename)
 InputData Communication::readData()
 {
 
+    InputData inputData{
+        inputData.battery_level = -1,
+        inputData.presence = false,
+        inputData.steps = 0};
+
     if (!input_file.is_open())
     {
         std::cerr << "[COMM] Failed to open " << filename_ << "\n";
+        return inputData;
     }
     json data;
     try
@@ -38,9 +44,9 @@ InputData Communication::readData()
     catch (...)
     {
         std::cerr << "[COMM] Invalid JSON format\n";
+        return inputData;
     }
 
-    InputData inputData;
     inputData.battery_level = data["battery_level"];
     inputData.presence = data["presence"];
     inputData.steps = data["steps"];
