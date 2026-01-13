@@ -16,6 +16,7 @@ set(files
     src/Communication.cpp
     src/InputManager.cpp
     src/Scheduler.cpp
+    src/Logic.cpp
 )
 
 message(STATUS "SmartIoT files: ${files}")
