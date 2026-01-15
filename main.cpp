@@ -9,8 +9,8 @@
 
 int main()
 {
+    OutputManager output;
     Scheduler scheduler;
-
     Communication comm("data/input.json"); // Created ONCE
     InputManager inputManager;
     LogicManager logicManager;
@@ -18,8 +18,8 @@ int main()
     AnalyticsManager analytics;
     InputData rawData{};
     InputData validatedData{};
-    bool isValid = false;
     SystemState decision = SystemState::SLEEP;
+    bool isValid = false;
 
     // Task 1: Read and validate input data
     scheduler.addTask(Task(
@@ -55,8 +55,11 @@ int main()
                       << std::endl;
 
             stateManager.updateState(decision);
+
+            output.printState(decision);
         },
         1000));
+
     // Task 3: Analytics update
     scheduler.addTask(Task(
         "analytics",
@@ -66,14 +69,9 @@ int main()
                 decision,
                 validatedData);
             AnalyticsReport report = analytics.getReport();
-            std::cout << "Analytics counters = " << std::endl
-                      << "  LOW_POWER: " << report.lowPowerCount << std::endl
-                      << "  ACTIVE:    " << report.activeCount << std::endl
-                      << "  SLEEP:     " << report.sleepCount << std::endl
-                      << "  IDLE:      " << report.IDLECount << std::endl
-                      << "  Avg Battery: " << report.avgBattery << std::endl;
+            output.printAnalytics(report);
         },
-        5000));
+        4999));
 
     // Run scheduler for 10 seconds
     scheduler.run(5000);

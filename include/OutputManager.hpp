@@ -1,17 +1,14 @@
 #pragma once
 #include "Logic.hpp"
+#include "AnalyticsManager.hpp"
 
 /**
- * @brief OutputManager executes actions based on system state
+ * @brief OutputManager handles all system outputs
+ *        (console, logs, external interfaces later)
  */
 class OutputManager
 {
 public:
-    OutputManager() = default;
-
-    /**
-     * @brief Execute output action according to current state
-     * @param state Current system state
-     */
-    void execute(SystemState state);
+    void printState(SystemState state);
+    void printAnalytics(const AnalyticsReport &report);
 };

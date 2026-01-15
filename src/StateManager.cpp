@@ -11,6 +11,5 @@ void StateManager::updateState(SystemState newState)
                   << std::endl;
 
         currentState = newState;
-        outputManager.execute(currentState);
-    }
+        }
 }

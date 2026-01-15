@@ -1,28 +1,43 @@
 #include "OutputManager.hpp"
 #include <iostream>
 
-void OutputManager::execute(SystemState state)
+void OutputManager::printState(SystemState state)
 {
+    std::cout << "[OUTPUT] Current State: ";
+
     switch (state)
     {
     case SystemState::ACTIVE:
-        std::cout << "[OUTPUT] System ACTIVE: Full functionality enabled\n";
+        std::cout << "ACTIVE - Full functionality enabled";
         break;
 
     case SystemState::IDLE:
-        std::cout << "[OUTPUT] System IDLE: Reduced activity\n";
+        std::cout << "IDLE - Reduced activity";
         break;
 
     case SystemState::SLEEP:
-        std::cout << "[OUTPUT] System SLEEP: Most components off\n";
+        std::cout << "SLEEP - Most components off";
         break;
 
     case SystemState::LOW_POWER:
-        std::cout << "[OUTPUT] System LOW_POWER: Energy saving mode\n";
+        std::cout << "LOW_POWER - Energy saving mode";
         break;
 
     default:
-        std::cout << "[OUTPUT] Unknown system state\n";
+        std::cout << "UNKNOWN";
         break;
     }
+
+    std::cout << std::endl;
+}
+
+void OutputManager::printAnalytics(const AnalyticsReport &report)
+{
+    std::cout << "\n[ANALYTICS REPORT]\n";
+    std::cout << "  ACTIVE Count    : " << report.activeCount << "\n";
+    std::cout << "  IDLE Count      : " << report.IDLECount << "\n";
+    std::cout << "  SLEEP Count     : " << report.sleepCount << "\n";
+    std::cout << "  LOW_POWER Count : " << report.lowPowerCount << "\n";
+    std::cout << "  Avg Battery     : " << report.avgBattery << "\n";
+    std::cout << "-----------------------------\n";
 }
