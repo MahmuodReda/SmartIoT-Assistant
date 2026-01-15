@@ -6,6 +6,7 @@
 #include "InputManager.hpp"
 #include "Logic.hpp"
 #include "StateManager.hpp"
+#include "DataSimulator.hpp"
 
 int main()
 {
@@ -20,6 +21,7 @@ int main()
     InputData validatedData{};
     SystemState decision = SystemState::SLEEP;
     bool isValid = false;
+    DataSimulator simulator;
 
     // Task 1: Read and validate input data
     scheduler.addTask(Task(
@@ -28,7 +30,8 @@ int main()
         {
             spdlog::info("Task: Read & Validate");
 
-            rawData = comm.readData();
+            // rawData = comm.readData();
+            rawData = simulator.getNext();
             isValid = inputManager.validateInputData(rawData, validatedData);
 
             std::cout << "[MAIN] Validation result: "
