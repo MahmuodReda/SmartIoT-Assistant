@@ -1,6 +1,6 @@
 #include <iostream>
 #include <spdlog/spdlog.h>
-
+#include "AnalyticsManager.hpp"
 #include "Scheduler.hpp"
 #include "Communication.hpp"
 #include "InputManager.hpp"
@@ -15,10 +15,11 @@ int main()
     InputManager inputManager;
     LogicManager logicManager;
     StateManager stateManager;
-
+    AnalyticsManager analytics;
     InputData rawData{};
     InputData validatedData{};
     bool isValid = false;
+    SystemState decision = SystemState::SLEEP;
 
     // Task 1: Read and validate input data
     scheduler.addTask(Task(
@@ -47,7 +48,7 @@ int main()
                 return;
             }
 
-            SystemState decision = logicManager.decideState(validatedData);
+            decision = logicManager.decideState(validatedData);
 
             std::cout << "[MAIN] Decision: "
                       << stateToString(decision)
@@ -56,6 +57,23 @@ int main()
             stateManager.updateState(decision);
         },
         1000));
+    // Task 3: Analytics update
+    scheduler.addTask(Task(
+        "analytics",
+        [&]()
+        {
+            analytics.update(
+                decision,
+                validatedData);
+            AnalyticsReport report = analytics.getReport();
+            std::cout << "Analytics counters = " << std::endl
+                      << "  LOW_POWER: " << report.lowPowerCount << std::endl
+                      << "  ACTIVE:    " << report.activeCount << std::endl
+                      << "  SLEEP:     " << report.sleepCount << std::endl
+                      << "  IDLE:      " << report.IDLECount << std::endl
+                      << "  Avg Battery: " << report.avgBattery << std::endl;
+        },
+        5000));
 
     // Run scheduler for 10 seconds
     scheduler.run(5000);
