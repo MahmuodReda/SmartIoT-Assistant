@@ -20,6 +20,7 @@ set(files
     src/StateManager.cpp
     src/OutputManager.cpp
     src/AnalyticsManager.cpp
+    src/HttpServer.cpp
 
 )
 
