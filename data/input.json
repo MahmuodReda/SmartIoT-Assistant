@@ -1,5 +1,5 @@
 {
-  "battery": 190,
-  "presence": 1,
-  "steps": 800
+  "battery_level": 55, 
+  "presence":  true, 
+  "steps": 145
 }
