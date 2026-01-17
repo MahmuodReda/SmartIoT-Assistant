@@ -7,77 +7,82 @@
 #include "Logic.hpp"
 #include "StateManager.hpp"
 #include "DataSimulator.hpp"
-
+#include "HttpServer.hpp"
 int main()
 {
-    OutputManager output;
-    Scheduler scheduler;
-    Communication comm("data/input.json"); // Created ONCE
-    InputManager inputManager;
-    LogicManager logicManager;
-    StateManager stateManager;
-    AnalyticsManager analytics;
-    InputData rawData{};
-    InputData validatedData{};
-    SystemState decision = SystemState::SLEEP;
-    bool isValid = false;
-    DataSimulator simulator;
+    HttpServer httpServer;
+    httpServer.start();
 
-    // Task 1: Read and validate input data
-    scheduler.addTask(Task(
-        "readAndValidate",
-        [&]()
-        {
-            spdlog::info("Task: Read & Validate");
+    // OutputManager output;
+    // Scheduler scheduler;
+    // Communication comm("data/input.json"); // Created ONCE
+    // InputManager inputManager;
+    // LogicManager logicManager;
+    // StateManager stateManager;
+    // AnalyticsManager analytics;
+    // InputData rawData{};
+    // InputData validatedData{};
+    // SystemState decision = SystemState::SLEEP;
+    // bool isValid = false;
+    // DataSimulator simulator;
 
-            // rawData = comm.readData();
-            rawData = simulator.getNext();
-            isValid = inputManager.validateInputData(rawData, validatedData);
+    // // Task 1: Read and validate input data
+    // scheduler.addTask(Task(
+    //     "readAndValidate",
+    //     [&]()
+    //     {
+    //         spdlog::info("Task: Read & Validate");
 
-            std::cout << "[MAIN] Validation result: "
-                      << (isValid ? "VALID" : "INVALID")
-                      << std::endl;
-        },
-        1000));
+    //         rawData = comm.readData();
+    //         // rawData = simulator.getNext();
+    //         isValid = inputManager.validateInputData(rawData, validatedData);
 
-    // Task 2: Apply logic and update state (only if data is valid)
-    scheduler.addTask(Task(
-        "logicAndState",
-        [&]()
-        {
-            if (!isValid)
-            {
-                spdlog::warn("Skipping logic: invalid input data");
-                return;
-            }
+    //         std::cout << "[MAIN] Validation result: "
+    //                   << (isValid ? "VALID" : "INVALID")
+    //                   << std::endl;
+    //     },
+    //     1000));
 
-            decision = logicManager.decideState(validatedData);
+    // // Task 2: Apply logic and update state (only if data is valid)
+    // scheduler.addTask(Task(
+    //     "logicAndState",
+    //     [&]()
+    //     {
+    //         if (!isValid)
+    //         {
+    //             spdlog::warn("Skipping logic: invalid input data");
+    //             return;
+    //         }
 
-            std::cout << "[MAIN] Decision: "
-                      << stateToString(decision)
-                      << std::endl;
+    //         decision = logicManager.decideState(validatedData);
 
-            stateManager.updateState(decision);
+    //         std::cout << "[MAIN] Decision: "
+    //                   << stateToString(decision)
+    //                   << std::endl;
 
-            output.printState(decision);
-        },
-        1000));
+    //         stateManager.updateState(decision);
 
-    // Task 3: Analytics update
-    scheduler.addTask(Task(
-        "analytics",
-        [&]()
-        {
-            analytics.update(
-                decision,
-                validatedData);
-            AnalyticsReport report = analytics.getReport();
-            output.printAnalytics(report);
-        },
-        4999));
+    //         output.printState(decision);
+    //     },
+    //     1000));
 
-    // Run scheduler for 10 seconds
-    scheduler.run(5000);
+    // // Task 3: Analytics update
+    // scheduler.addTask(Task(
+    //     "analytics",
+    //     [&]()
+    //     {
+    //         analytics.update(
+    //             decision,
+    //             validatedData);
+    //         AnalyticsReport report = analytics.getReport();
+    //         output.printAnalytics(report);
+    //     },
+    //     4999));
+
+    // // Run scheduler for 10 seconds
+    httpServer.stop();
+
+    // scheduler.run(5000);
 
     return 0;
 }
