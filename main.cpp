@@ -1,97 +1,124 @@
 #include <iostream>
+#include <thread>
+
 #include <spdlog/spdlog.h>
-#include "AnalyticsManager.hpp"
+
+#include "HttpServer.hpp"
 #include "Scheduler.hpp"
 #include "Communication.hpp"
+
 #include "InputManager.hpp"
 #include "Logic.hpp"
 #include "StateManager.hpp"
-#include "DataSimulator.hpp"
-#include "HttpServer.hpp"
-#include "thread"
+#include "AnalyticsManager.hpp"
+#include "OutputManager.hpp"
 
-void allfun()
+/* ===================== Configuration ===================== */
+
+constexpr const char *INPUT_FILE_PATH =
+    "D:\\Mahmood_Reda\\SmartIoT-Assistant\\data\\input.json";
+
+constexpr int INPUT_PERIOD_MS = 1000;
+constexpr int LOGIC_PERIOD_MS = 1000;
+constexpr int ANALYTICS_PERIOD_MS = 5000;
+constexpr int SYSTEM_RUNTIME_MS = 10000;
+
+/* ===================== Runtime Context ===================== */
+
+struct RuntimeContext
 {
-}
+    InputData rawData{};
+    InputData validatedData{};
+    bool isValid{false};
+    SystemState decision{SystemState::SLEEP};
+};
+
+/* ===================== Main ===================== */
+
 int main()
 {
+    /* ---------- Logging ---------- */
+    spdlog::set_level(spdlog::level::info);
+    spdlog::info("SmartIoT Assistant starting...");
 
+    /* ---------- HTTP Server ---------- */
     HttpServer httpServer;
     httpServer.start();
 
-    OutputManager output;
+    /* ---------- Core Objects ---------- */
     Scheduler scheduler;
-
-    InputData rawData{};
+    Communication communication(INPUT_FILE_PATH);
 
     InputManager inputManager;
     LogicManager logicManager;
     StateManager stateManager;
     AnalyticsManager analytics;
+    OutputManager output;
 
-    InputData validatedData{};
-    SystemState decision = SystemState::SLEEP;
-    bool isValid = false;
-    DataSimulator simulator;
+    RuntimeContext ctx;
 
-    // Task 1: Read and validate input data
+    /* =======================================================
+       Task 1: Read & Validate Input
+       ======================================================= */
     scheduler.addTask(Task(
-        "readAndValidate",
+        "ReadAndValidateInput",
         [&]()
         {
-            Communication comm("D:\\Mahmood_Reda\\SmartIoT-Assistant\\data\\input.json"); // Created ONCE
+            spdlog::info("[TASK] Read & Validate Input");
 
-            spdlog::info("Task: Read & Validate");
-            rawData = comm.readData();
+            ctx.rawData = communication.readData();
+            ctx.isValid = inputManager.validateInputData(
+                ctx.rawData,
+                ctx.validatedData);
 
-            isValid = inputManager.validateInputData(rawData, validatedData);
-
-            std::cout << "[MAIN] Validation result: "
-                      << (isValid ? "VALID" : "INVALID")
-                      << std::endl;
+            spdlog::info("[TASK] Validation result: {}",
+                         ctx.isValid ? "VALID" : "INVALID");
         },
-        1000));
+        INPUT_PERIOD_MS));
 
-    // Task 2: Apply logic and update state (only if data is valid)
+    /* =======================================================
+       Task 2: Logic + State Update
+       ======================================================= */
     scheduler.addTask(Task(
-        "logicAndState",
+        "LogicAndState",
         [&]()
         {
-            if (!isValid)
+            if (!ctx.isValid)
             {
-                spdlog::warn("Skipping logic: invalid input data");
+                spdlog::warn("[TASK] Skipping logic (invalid data)");
                 return;
             }
 
-            decision = logicManager.decideState(validatedData);
+            ctx.decision = logicManager.decideState(ctx.validatedData);
 
-            std::cout << "[MAIN] Decision: "
-                      << stateToString(decision)
-                      << std::endl;
+            spdlog::info("[TASK] Decision: {}",
+                         stateToString(ctx.decision));
 
-            stateManager.updateState(decision);
-
-            output.printState(decision);
+            stateManager.updateState(ctx.decision);
+            output.printState(ctx.decision);
         },
-        1000));
+        LOGIC_PERIOD_MS));
 
-    // Task 3: Analytics update
+    /* =======================================================
+       Task 3: Analytics
+       ======================================================= */
     scheduler.addTask(Task(
-        "analytics",
+        "Analytics",
         [&]()
         {
-            analytics.update(
-                decision,
-                validatedData);
+            analytics.update(ctx.decision, ctx.validatedData);
             AnalyticsReport report = analytics.getReport();
             output.printAnalytics(report);
         },
-        9999));
+        ANALYTICS_PERIOD_MS));
 
-    // Run scheduler for 10 seconds
+    /* ---------- Run System ---------- */
+    spdlog::info("Scheduler running...");
+    scheduler.run(SYSTEM_RUNTIME_MS);
 
-    scheduler.run(10000);
-    allfun();
+    /* ---------- Shutdown ---------- */
+    httpServer.stop();
+    spdlog::info("SmartIoT Assistant stopped.");
 
     return 0;
 }
