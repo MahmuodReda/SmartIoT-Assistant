@@ -1,14 +1,31 @@
+/**
+ * @file HttpServer.cpp
+ * @author Mahmoud Reda
+ * @brief
+ * @version 0.1
+ * @date 2026-01-21
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #include "HttpServer.hpp"
 #include <fstream>
 #include <iostream>
 
 HttpServer::HttpServer() {}
-
+/**
+ * @brief Destroy the Http Server:: Http Server object
+ *
+ */
 HttpServer::~HttpServer()
 {
     stop();
 }
-
+/**
+ * @brief Starts the HTTP server.
+ *
+ */
 void HttpServer::start()
 {
     if (running)
@@ -18,7 +35,10 @@ void HttpServer::start()
     std::cout << "[HTTP] Starting server thread...\n";
     serverThread = std::thread(&HttpServer::run, this);
 }
-
+/**
+ * @brief Stops the HTTP server.
+ *
+ */
 void HttpServer::stop()
 {
     if (!running)
@@ -35,6 +55,10 @@ void HttpServer::stop()
 
     std::cout << "[HTTP] Server stopped\n";
 }
+/**
+ * @brief Runs the HTTP server in a separate thread.
+ *
+ */
 
 void HttpServer::run()
 {

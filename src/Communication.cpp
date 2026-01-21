@@ -1,3 +1,13 @@
+/**
+ * @file Communication.cpp
+ * @author Mahmoud Reda
+ * @brief
+ * @version 0.1
+ * @date 2026-01-21
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
 #include "Communication.hpp"
 #include "json.hpp" // nlohmann JSON
 #include <iostream>

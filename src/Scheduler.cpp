@@ -1,7 +1,22 @@
+/**
+ * @file Scheduler.cpp
+ * @author Mahmoud Reda
+ * @brief
+ * @version 0.1
+ * @date 2026-01-21
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #include "Scheduler.hpp"
 #include <iostream>
 #include <thread>
-
+/**
+ * @brief Adds a task to the scheduler.
+ *
+ * @param task
+ */
 void Scheduler::addTask(const Task &task)
 {
     tasks.push_back(task);

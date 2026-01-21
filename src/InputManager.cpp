@@ -1,7 +1,25 @@
+/**
+ * @file InputManager.cpp
+ * @author Mahmoud Reda
+ * @brief
+ * @version 0.1
+ * @date 2026-01-21
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #include "InputManager.hpp"
 #include "Communication.hpp"
 #include <iostream>
-
+/**
+ * @brief Validates the input data and populates the output data with valid values.
+ *
+ * @param data
+ * @param outputData
+ * @return true
+ * @return false
+ */
 bool InputManager::validateInputData(const InputData &data, InputData &outputData)
 {
     bool isValid = true;

@@ -1,6 +1,20 @@
+/**
+ * @file OutputManager.cpp
+ * @author Mahmoud Reda
+ * @brief
+ * @version 0.1
+ * @date 2026-01-21
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
 #include "OutputManager.hpp"
 #include <iostream>
-
+/**
+ * @brief Prints the current system state.
+ *
+ * @param state
+ */
 void OutputManager::printState(SystemState state)
 {
     std::cout << "[OUTPUT] Current State: ";
@@ -30,7 +44,11 @@ void OutputManager::printState(SystemState state)
 
     std::cout << std::endl;
 }
-
+/**
+ * @brief Prints the analytics report.
+ *
+ * @param report
+ */
 void OutputManager::printAnalytics(const AnalyticsReport &report)
 {
     std::cout << "\n[ANALYTICS REPORT]\n";

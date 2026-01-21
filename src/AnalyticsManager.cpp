@@ -1,4 +1,20 @@
+/**
+ * @file AnalyticsManager.cpp
+ * @author Mahmoud Reda
+ * @brief
+ * @version 0.1
+ * @date 2026-01-21
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
 #include "AnalyticsManager.hpp"
+/**
+ * @brief Updates the analytics manager with new system state and input data.
+ *
+ * @param state
+ * @param data
+ */
 void AnalyticsManager::update(SystemState state, const InputData &data)
 {
     samples++;
@@ -21,6 +37,11 @@ void AnalyticsManager::update(SystemState state, const InputData &data)
         IDLECounter++;
     }
 }
+/**
+ * @brief Returns the current analytics report.
+ *
+ * @return AnalyticsReport
+ */
 AnalyticsReport AnalyticsManager::getReport() const
 {
     AnalyticsReport report;
